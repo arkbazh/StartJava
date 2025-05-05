@@ -1,0 +1,19 @@
+# Java class files
+*.class
+
+# Игнорировать системные файлы macOS
+.DS_Store
+
+# Игнорировать папки
+utils/
+out/
+
+
+# IDE
+.DS_Store
+/*.iml
+.idea/
+/.vscode/
+
+# Neo-tree, nvim и т.п.
+*.swp
