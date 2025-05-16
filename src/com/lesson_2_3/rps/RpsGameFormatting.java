@@ -8,6 +8,26 @@ public class RpsGameFormatting {
     private static final String SCISSORS = "✌️";
     private static final String PAPER = "✋";
 
+    public static void main(String[] args) throws InterruptedException {
+        Random r = new Random();
+        Scanner console = new Scanner(System.in);
+        String name1 = inputName(console);
+        String name2 = inputName(console);
+
+        // Ход первого игрока
+        int position = generatePosition(name1, r);
+        String sign1 = determineSign(position);
+        showSigns(sign1);
+
+        // Ход второго игрока
+        position = generatePosition(name2, r);
+        String sign2 = determineSign(position);
+        showSigns(sign2);
+
+        determineWinner(name1, sign1, name2, sign2);
+        console.close();
+    }
+
     private static String inputName(Scanner console) {
         System.out.print("Введите имя игрока: ");
         return console.nextLine();
@@ -55,26 +75,5 @@ public class RpsGameFormatting {
         } else {
             System.out.println("\nПобедил - " + name2);
         }
-    }
-
-    public static void main(String[] args)
-            throws InterruptedException {
-        Random r = new Random();
-        Scanner console = new Scanner(System.in);
-        String name1 = inputName(console);
-        String name2 = inputName(console);
-
-        // Ход первого игрока
-        int position = generatePosition(name1, r);
-        String sign1 = determineSign(position);
-        showSigns(sign1);
-
-        // Ход второго игрока
-        position = generatePosition(name2, r);
-        String sign2 = determineSign(position);
-        showSigns(sign2);
-
-        determineWinner(name1, sign1, name2, sign2);
-        console.close();
     }
 }
