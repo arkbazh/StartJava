@@ -1,7 +1,6 @@
 package src.com.lesson_1.final_;
 
 public class Calculator {
-
     private int a;
     private char sign;
     private int b;

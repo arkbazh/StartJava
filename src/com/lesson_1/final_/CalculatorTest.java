@@ -3,7 +3,6 @@ package src.com.lesson_1.final_;
 import java.util.Scanner;
 
 public class CalculatorTest {
-
     public static void main(String[] args) {
         Scanner console = new Scanner(System.in);
         Calculator calc = new Calculator();

@@ -1,4 +1,4 @@
-package src.com.lesson_1.base;
+package src.com.lesson_1.final_;
 
 public class MyFirstGame {
     public static void main(String[] args) {
