@@ -14,6 +14,8 @@ out/
 /*.iml
 .idea/
 /.vscode/
+.classpath
+.project
 
 # Neo-tree, nvim и т.п.
 *.swp
