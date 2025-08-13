@@ -20,12 +20,18 @@ public class TransactionReverser {
         return reversed;
     }
 
-    private static void printTransactions(int[] transaction) {
+    private static void printTransactions(int[] original) {
         System.out.print("Исходные транзакции: ");
-        System.out.println(transaction == null ? "Транзакций нет" : Arrays.toString(transaction));
+        System.out.println(Arrays.toString(original));
+        if (original == null) {
+            System.out.println("null(Ошибка данных)");
+        } else if (original.length == 0) {
+            System.out.println("Пустой массив(Нет данных)");
+        } else {
+            System.out.print(" В обратном порядке: ");
+            System.out.println(Arrays.toString(reverse(original)));
+        }
 
-        System.out.print(" В обратном порядке: ");
-        System.out.println(transaction == null ? "Транзакций нет" : Arrays.toString(reverse(transaction)));
     }
 
     public static void main(String[] args) {
