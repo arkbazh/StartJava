@@ -3,37 +3,39 @@ package src.com.lesson_2_3_4.array;
 import java.util.concurrent.ThreadLocalRandom;
 
 public class HackingSimulator {
-    private static final char[] SYMBOLS = {'-', '\\', '|', '/'};
-    private static final int COUNT = 3;
-    private static final int DELAY_MS = 500;
-    private static final int TRESHHOLD = 70;
-    private static final String LABEL = "Hacking: ";
-    private static final String GRANTED_MSG = "\u001B[32mAccess granted!\u001B[0m";
-    private static final String DENIED_MSG = "\u001B[31mAccess denied!\u001B[0m";
 
     public static void main(String[] args) {
-        simulator();
+        System.out.print("Hacking: ");
+        boolean granted = hack();
+        printResult(granted);
     }
 
-    public static void simulator() {
-        for (int i = 0; i < COUNT; i++) {
-            for (char c : SYMBOLS) {
-                System.out.print("\r" + LABEL + c);
-                try {
-                    Thread.sleep(DELAY_MS);
-                } catch (InterruptedException e) {
-                    Thread.currentThread().interrupt();
-                    System.out.println("Поток прерван!");
-                    return;
-                }
+    private static boolean hack() {
+        final char[] spins = {'-', '\\', '|', '/'};
+        final int count = 3;
+        final int delay = 300;
+        int steps = count * spins.length;
+        for (int i = 0; i < steps; i++) {
+            char c = spins[i % spins.length];
+            System.out.print(c);
+            try {
+                Thread.sleep(delay);
+            } catch (InterruptedException e) {
+                Thread.currentThread().interrupt();
+                return false;
             }
-            System.out.print("\r");
+            System.out.print("\b");
         }
-        int result = ThreadLocalRandom.current().nextInt(101);
-        if (result > TRESHHOLD) {
-            System.out.println(GRANTED_MSG);
-        } else {
-            System.out.println(DENIED_MSG);
-        }
+        int marker = ThreadLocalRandom.current().nextInt(0, 101);
+        return marker > 70;
+    }
+
+    private static void printResult(boolean granted) {
+        final String GREEN = "\u001B[32m";
+        final String RED = "\u001B[31m";
+        final String RESET = "\u001B[0m";
+        String msg = granted ? GREEN + "Access Granted!" + RESET
+                : RED + "Access Denied!" + RESET;
+        System.out.print(msg);
     }
 }
