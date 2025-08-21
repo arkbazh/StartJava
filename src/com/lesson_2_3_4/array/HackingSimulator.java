@@ -3,11 +3,9 @@ package src.com.lesson_2_3_4.array;
 import java.util.concurrent.ThreadLocalRandom;
 
 public class HackingSimulator {
-
     public static void main(String[] args) {
         System.out.print("Hacking: ");
-        boolean granted = hack();
-        printAccess(granted);
+        printAccess(hack());
     }
 
     private static boolean hack() {
@@ -30,10 +28,8 @@ public class HackingSimulator {
         final String green = "\u001B[32m";
         final String red = "\u001B[31m";
         final String reset = "\u001B[0m";
-        if (granted) {
-            System.out.print("\b" + green + "Access Granted!" + reset);
-        } else {
-            System.out.print("\b" + red + "Access Denied!" + reset);
-        }
+        System.out.println("\b" +
+                (granted ? green + "Access Granted!" : red + "Access Denied!") + reset
+        );
     }
 }
