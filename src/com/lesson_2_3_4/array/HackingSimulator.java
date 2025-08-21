@@ -7,35 +7,33 @@ public class HackingSimulator {
     public static void main(String[] args) {
         System.out.print("Hacking: ");
         boolean granted = hack();
-        printResult(granted);
+        printAccess(granted);
     }
 
     private static boolean hack() {
         final char[] spins = {'-', '\\', '|', '/'};
-        final int count = 3;
-        final int delay = 300;
-        int steps = count * spins.length;
+        int steps = 3 * spins.length;
         for (int i = 0; i < steps; i++) {
             char c = spins[i % spins.length];
-            System.out.print(c);
+            System.out.print("\b" + c);
             try {
-                Thread.sleep(delay);
+                Thread.sleep(300);
             } catch (InterruptedException e) {
                 Thread.currentThread().interrupt();
                 return false;
             }
-            System.out.print("\b");
         }
-        int marker = ThreadLocalRandom.current().nextInt(0, 101);
-        return marker > 70;
+        return ThreadLocalRandom.current().nextInt(101) > 70;
     }
 
-    private static void printResult(boolean granted) {
-        final String GREEN = "\u001B[32m";
-        final String RED = "\u001B[31m";
-        final String RESET = "\u001B[0m";
-        String msg = granted ? GREEN + "Access Granted!" + RESET
-                : RED + "Access Denied!" + RESET;
-        System.out.print(msg);
+    private static void printAccess(boolean granted) {
+        final String green = "\u001B[32m";
+        final String red = "\u001B[31m";
+        final String reset = "\u001B[0m";
+        if (granted) {
+            System.out.print("\b" + green + "Access Granted!" + reset);
+        } else {
+            System.out.print("\b" + red + "Access Denied!" + reset);
+        }
     }
 }
