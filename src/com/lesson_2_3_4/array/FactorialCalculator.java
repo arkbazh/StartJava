@@ -1,74 +1,80 @@
 package src.com.lesson_2_3_4.array;
 
-import java.util.Arrays;
-
 public class FactorialCalculator {
     public static void main(String[] args) {
-        print();
-        print(null);
-        print(8, 0, 9);
-        print(-3, 1, 7, 13);
-        print(-22, -0);
+        int[] numbers;
+
+        numbers = new int[]{};
+        print(numbers, calc(numbers));
+
+        numbers = null;
+        print(numbers, calc(numbers));
+
+        numbers = new int[]{8, 0, 9};
+        print(numbers, calc(numbers));
+
+        numbers = new int[]{-3, 1, 7, 13};
+        print(numbers, calc(numbers));
+
+        numbers = new int[]{-22, -0};
+        print(numbers, calc(numbers));
     }
 
-    // Только выводим
-    public static void print(int... numbers) {
+    public static int[] calc(int... numbers) {
         if (numbers == null) {
-            System.out.println("Ошибка: массив null\n");
-            return;
-        }
-        if (numbers.length == 0) {
-            System.out.println("Ошибка: длина массива 0\n");
-            return;
-        }
-
-        System.out.println("Исходный массив: " + Arrays.toString(numbers));
-
-        int[] factorials = calc(numbers);
-
-        for (int i = 0; i < factorials.length; i++) {
-            int n = numbers[i];
-            if (n < 0) {
-                System.out.printf("Ошибка: факториал %d! не определен\n", n);
-                continue;
-            }
-            if (n <= 1) {
-                System.out.println(n + "! = 1");
-                continue;
-            }
-            StringBuilder expr = new StringBuilder();
-            expr.append(n).append("! = 1");
-            for (int j = 2; j <= n; j++) {
-                expr.append(" * ").append(j);
-            }
-            int f = factorials[i];
-            expr.append(" = ").append(f);
-            System.out.println(expr);
-        }
-        System.out.println();
-    }
-
-    // Только считаем
-    private static int[] calc(int[] numbers) {
-        if (numbers == null) {
+            System.out.println("Ошибка: массив null");
             return null;
         }
+        if (numbers.length == 0) {
+            System.out.println("Ошибка: длина массива 0");
+            return numbers;
+        }
+
         int[] factorials = numbers.clone();
-        for (int i = 0; i < factorials.length; i++) {
-            if (factorials[i] < 0) {
+
+        for (int i = 0; i < numbers.length; i++) {
+            if (numbers[i] < 0) {
+                System.out.printf("Ошибка: факториал %d! не определен\n", factorials[i]);
                 continue;
             }
-            factorials[i] = factorial(factorials[i]);
+            int fact = factorial(numbers[i]);
+            factorials[i] = fact;
         }
         return factorials;
     }
 
-    // Только считаем
-    private static int factorial(int n) {
-        if (n == 0 || n == 1) {
-            return 1;
-        } else {
-            return n * factorial(n - 1);
+    public static void print(int[] numbers, int[] factorials) {
+        if (numbers == null) {
+            System.out.println("Ошибка: исходный массив null");
+            return;
         }
+        if (factorials == null) {
+            System.out.println("Ошибка: массив факториалов null");
+            return;
+        }
+
+        for (int i = 0; i < factorials.length; i++) {
+            if (numbers[i] >= 0) {
+                System.out.println(expr(numbers[i], factorials[i]));
+            }
+        }
+        System.out.println();
+    }
+
+    private static int factorial(int n) {
+        return (n == 0 || n == 1) ? 1 : n * factorial(n - 1);
+    }
+
+    private static String expr(int num, int fact) {
+        if (num == 0 || num == 1) {
+            return num + "! = 1 = " + fact;
+        }
+
+        StringBuilder sb = new StringBuilder().append(num).append("! = 1");
+        for (int i = 2; i <= num; i++) {
+            sb.append(" * ").append(i);
+        }
+        sb.append(" = ").append(fact);
+        return sb.toString();
     }
 }
