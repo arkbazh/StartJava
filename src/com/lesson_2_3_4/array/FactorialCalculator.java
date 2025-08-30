@@ -32,7 +32,7 @@ public class FactorialCalculator {
 
         for (int i = 0; i < numbers.length; i++) {
             if (numbers[i] < 0) {
-                System.out.printf("Ошибка: факториал %d! не определен\n", factorials[i]);
+                System.out.printf("Ошибка: факториал %d! не определен\n", numbers[i]);
                 continue;
             }
             factorials[i] = factorial(numbers[i]);
@@ -56,13 +56,13 @@ public class FactorialCalculator {
 
         for (int i = 0; i < factorials.length; i++) {
             if (numbers[i] >= 0) {
-                System.out.println(formatFactorialExpr(numbers[i], factorials[i]));
+                System.out.println(formFactorialExpr(numbers[i], factorials[i]));
             }
         }
         System.out.println();
     }
 
-    private static String formatFactorialExpr(int num, int fact) {
+    private static String formFactorialExpr(int num, int fact) {
         if (num == 0 || num == 1) {
             return num + "! = " + fact;
         }
