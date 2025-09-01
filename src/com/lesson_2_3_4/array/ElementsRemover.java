@@ -5,70 +5,62 @@ import java.util.concurrent.ThreadLocalRandom;
 
 public class ElementsRemover {
     public static void main(String[] args) {
-        double[] original = generateRandomDoubleArray();
-        double[] truncate = truncateAboveThresholdAtIndex(original, -1);
-        printArray(original, truncate);
-
-        original = generateRandomDoubleArray();
-        truncate = truncateAboveThresholdAtIndex(original, 15);
-        printArray(original, truncate);
-
-        original = generateRandomDoubleArray();
-        truncate = truncateAboveThresholdAtIndex(original, 0);
-        printArray(original, truncate);
-
-        original = generateRandomDoubleArray();
-        truncate = truncateAboveThresholdAtIndex(original, 14);
-        printArray(original, truncate);
+        run(-1);
+        run(15);
+        run(0);
+        run(14);
     }
 
-    private static double[] generateRandomDoubleArray() {
-        double[] array = new double[15];
+    private static void run(int index) {
+        final float[] original = generateRandomFloatArray();
+        if (index < 0 || index >= original.length) {
+            System.out.printf("Ошибка: индекс %d вне допустимого диапазона(%d - %d)%n%n",
+                    index, 0,
+                    original.length - 1);
+            return;
+        }
+        final float threshold = original[index];
+        System.out.printf("Значение элемента по индексу %d = %.3f%n", index, threshold);
+        final float[] modified = removeAboveThresholdAtIndex(original, index);
+        printArray(original, modified);
+    }
+
+    private static float[] generateRandomFloatArray() {
+        float[] array = new float[15];
         for (int i = 0; i < array.length; i++) {
-            array[i] = ThreadLocalRandom.current().nextDouble(0, 1);
+            array[i] = ThreadLocalRandom.current().nextFloat(0, 1);
         }
         return array;
     }
 
-    private static double[] truncateAboveThresholdAtIndex(double[] array, int index) {
-        if (array == null || array.length == 0) {
-            return null;
-        }
-        if (index < 0 || index >= array.length) {
-            System.out.printf("Ошибка: индекс %d вне допустимого диапазона(%d - %d). Массив не " +
-                            "изменился\n",
-                    index, 0,
-                    array.length - 1);
-            return array;
-        }
-        double[] copy = Arrays.copyOf(array, array.length);
-        double threshold = array[index];
-        for (int i = 0; i < copy.length; i++) {
-            if (copy[i] > threshold) {
-                copy[i] = 0.0;
+    private static float[] removeAboveThresholdAtIndex(float[] original, int index) {
+        float[] modified = Arrays.copyOf(original, original.length);
+        float threshold = original[index];
+        for (int i = 0; i < modified.length; i++) {
+            if (modified[i] > threshold) {
+                modified[i] = 0.0f;
             }
         }
-        return copy;
+        return modified;
     }
 
-    private static void printArray(double[] original, double[] truncated) {
+    private static void printArray(float[] original, float[] modified) {
         System.out.println("Исходный массив");
-        for (int i = 0; i < original.length; i++) {
-            System.out.printf("%.3f ", original[i]);
-            if (i == 7) {
-                System.out.println();
-            }
-        }
-        System.out.println();
+        printSingleArray(original);
+
         System.out.println("Измененный массив");
-        for (int i = 0; i < truncated.length; i++) {
-            System.out.printf("%.3f ", truncated[i]);
+        printSingleArray(modified);
+        System.out.printf("%n");
+    }
+
+    private static void printSingleArray(float[] array) {
+        for (int i = 0; i < array.length; i++) {
+            System.out.printf("%.3f ", array[i]);
             if (i == 7) {
                 System.out.println();
             }
         }
-        System.out.println();
-        System.out.println();
+        System.out.printf("%n");
     }
 }
 
