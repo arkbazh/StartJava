@@ -22,7 +22,7 @@ public class ElementsRemover {
         final float threshold = original[index];
         System.out.printf("Значение элемента по индексу %d = %.3f%n", index, threshold);
         final float[] modified = removeAboveThresholdAtIndex(original, index);
-        printArray(original, modified);
+        printArrays(original, modified);
     }
 
     private static float[] generateRandomFloatArray() {
@@ -44,7 +44,7 @@ public class ElementsRemover {
         return modified;
     }
 
-    private static void printArray(float[] original, float[] modified) {
+    private static void printArrays(float[] original, float[] modified) {
         System.out.println("Исходный массив");
         printSingleArray(original);
 
