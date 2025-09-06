@@ -11,6 +11,14 @@ public class ElementsRemover {
         run(14);
     }
 
+    private static float[] generateRandomFloatArray() {
+        float[] array = new float[15];
+        for (int i = 0; i < array.length; i++) {
+            array[i] = ThreadLocalRandom.current().nextFloat(0, 1);
+        }
+        return array;
+    }
+
     private static void run(int index) {
         final float[] original = generateRandomFloatArray();
         if (index < 0 || index >= original.length) {
@@ -25,13 +33,6 @@ public class ElementsRemover {
         printArrays(original, modified);
     }
 
-    private static float[] generateRandomFloatArray() {
-        float[] array = new float[15];
-        for (int i = 0; i < array.length; i++) {
-            array[i] = ThreadLocalRandom.current().nextFloat(0, 1);
-        }
-        return array;
-    }
 
     private static float[] removeAboveThresholdAtIndex(float[] original, int index) {
         float[] modified = Arrays.copyOf(original, original.length);
@@ -46,14 +47,14 @@ public class ElementsRemover {
 
     private static void printArrays(float[] original, float[] modified) {
         System.out.println("Исходный массив");
-        printSingleArray(original);
+        printArraysAtTwoStrings(original);
 
         System.out.println("Измененный массив");
-        printSingleArray(modified);
+        printArraysAtTwoStrings(modified);
         System.out.printf("%n");
     }
 
-    private static void printSingleArray(float[] array) {
+    private static void printArraysAtTwoStrings(float[] array) {
         for (int i = 0; i < array.length; i++) {
             System.out.printf("%.3f ", array[i]);
             if (i == 7) {
