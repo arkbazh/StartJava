@@ -61,13 +61,18 @@ public class CharacterTrianglePrinter {
             return;
         }
 
+        StringBuilder triangle = new StringBuilder();
         int height = sequence.length();
         for (int i = 0; i < height; i++) {
             char c = sequence.charAt(i);
             int indent = height - 1 - i;
             int width = i * 2 + 1;
-            System.out.println(" ".repeat(indent) + String.valueOf(c).repeat(width));
+
+            triangle.append(" ".repeat(indent))
+                    .append(String.valueOf(c).repeat(width))
+                    .append(System.lineSeparator());
         }
-        System.out.println();
+        triangle.append(System.lineSeparator());
+        System.out.println(triangle);
     }
 }
