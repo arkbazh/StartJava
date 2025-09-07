@@ -14,23 +14,26 @@ public class CharacterTrianglePrinter {
      * @param end       конечный символ
      * @param ascending true - по возрастанию, false - по убыванию
      *
-     * @return возвращает строку символов; пустую строку, если параметры не соответствуют
-     * направлению
+     * @return строка символов, отсортированная по возрастанию или убыванию; пустая строка, если
+     * параметры не соответствуют направлению
      */
     private static String generateCharSequence(char start, char end, boolean ascending) {
-        StringBuilder sb = new StringBuilder();
-
         if (ascending && start > end) {
-            System.out.printf("Ошибка: левая граница (%d) > правой (%d)%n", (int) start,
+            System.out.printf(
+                    "Ошибка: левая граница (%d) > правой (%d)%n",
+                    (int) start,
                     (int) end);
             return "";
         }
         if (!ascending && start < end) {
-            System.out.printf("Ошибка: правая граница (%d) > левой (%d)%n", (int) end,
+            System.out.printf(
+                    "Ошибка: правая граница (%d) > левой (%d)%n",
+                    (int) end,
                     (int) start);
             return "";
         }
 
+        StringBuilder sb = new StringBuilder();
         if (ascending) {
             for (char c = start; c <= end; c++) {
                 sb.append(c);
@@ -44,7 +47,7 @@ public class CharacterTrianglePrinter {
     }
 
     /**
-     * Рисует равнобедренный треугольник из строки символов Если
+     * Рисует равнобедренный треугольник из строки символов. Если
      * {@code sequence == null || sequence.isEmpty} выводит сообщение об ошибке и завершает работу
      *
      * @param sequence строка символов
@@ -54,8 +57,8 @@ public class CharacterTrianglePrinter {
             System.out.printf("Ошибка: аргумент null%n%n");
             return;
         }
-        if (sequence.isEmpty()) {
-            System.out.printf("Ошибка: аргумент isEmpty%n%n");
+        if (sequence.isBlank()) {
+            System.out.printf("Ошибка: аргумент нулевой длины%n%n");
             return;
         }
 
