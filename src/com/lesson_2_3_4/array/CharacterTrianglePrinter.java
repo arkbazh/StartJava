@@ -10,26 +10,23 @@ public class CharacterTrianglePrinter {
     /**
      * Генерирует строку символов из интервала [start, end] В заданном направлении.
      *
+     * <p>
+     * Строка сортируется по возрастанию или убыванию. Если параметры не соответствуют, возвращается пустая
+     * строка.
+     *
      * @param start     начальный символ
      * @param end       конечный символ
      * @param ascending true - по возрастанию, false - по убыванию
      *
-     * @return строка символов, отсортированная по возрастанию или убыванию; пустая строка, если
-     * параметры не соответствуют направлению
+     * @return строка символов; строка пустая.
      */
     private static String generateCharSequence(char start, char end, boolean ascending) {
         if (ascending && start > end) {
-            System.out.printf(
-                    "Ошибка: левая граница (%d) > правой (%d)%n",
-                    (int) start,
-                    (int) end);
+            System.out.printf("Ошибка: левая граница (%d) > правой (%d)%n", (int) start, (int) end);
             return "";
         }
         if (!ascending && start < end) {
-            System.out.printf(
-                    "Ошибка: правая граница (%d) > левой (%d)%n",
-                    (int) end,
-                    (int) start);
+            System.out.printf("Ошибка: правая граница (%d) > левой (%d)%n", (int) end, (int) start);
             return "";
         }
 
@@ -47,8 +44,10 @@ public class CharacterTrianglePrinter {
     }
 
     /**
-     * Рисует равнобедренный треугольник из строки символов. Если
-     * {@code sequence == null || sequence.isEmpty} выводит сообщение об ошибке и завершает работу
+     * Рисует равнобедренный треугольник из строки символов.
+     *
+     * <p>
+     * Если {@code sequence == null || sequence.isEmpty} выводит сообщение об ошибке и завершает работу
      *
      * @param sequence строка символов
      */
