@@ -8,11 +8,11 @@ import java.util.concurrent.ThreadLocalRandom;
  */
 public class ArrayUniqueNumsFiller {
     public static void main(String[] args) {
-        print(generateUniqueNumsArray(-30, -10, 23), 23);
-        print(generateUniqueNumsArray(10, 50, 10), 10);
-        print(generateUniqueNumsArray(-34, -34, -1), -1);
-        print(generateUniqueNumsArray(-1, -2, -3), -2);
-        print(generateUniqueNumsArray(-5, -8, -2), -2);
+        printArrayLineByLine(generateUniqueNumsArray(-30, -10, 23), 23);
+        printArrayLineByLine(generateUniqueNumsArray(10, 50, 10), 10);
+        printArrayLineByLine(generateUniqueNumsArray(-34, -34, -1), -1);
+        printArrayLineByLine(generateUniqueNumsArray(-1, -2, -3), -2);
+        printArrayLineByLine(generateUniqueNumsArray(-5, -8, -2), -2);
     }
 
     /**
@@ -64,7 +64,7 @@ public class ArrayUniqueNumsFiller {
         return nums;
     }
 
-    private static void print(int[] nums, int count) {
+    private static void printArrayLineByLine(int[] nums, int count) {
         if (nums == null) {
             return;
         }
