@@ -89,9 +89,7 @@ public class TypewriterEffect {
         if (minIndex == -1) {
             throw new IllegalArgumentException("Ошибка: не найдено ни одного слова");
         }
-        int start = Math.min(minIndex, maxIndex);
-        int end = Math.max(minIndex, maxIndex);
-        return new int[]{start, end};
+        return new int[]{minIndex, maxIndex};
     }
 
     private static void toUpperCaseRange(String[] rawTokens, int[] range) {
@@ -104,10 +102,9 @@ public class TypewriterEffect {
         if (range[0] < 0 || range[1] >= rawTokens.length) {
             throw new IllegalArgumentException("Ошибка: диапазон вне массива токенов");
         }
-        if (range[0] > range[1]) {
-            throw new IllegalArgumentException("Ошибка: начало диапазона не может быть больше конца");
-        }
-        for (int i = range[0]; i <= range[1]; i++) {
+        int start = Math.min(range[0], range[1]);
+        int end = Math.max(range[0], range[1]);
+        for (int i = start; i <= end; i++) {
             if (!"\n".equals(rawTokens[i])) {
                 rawTokens[i] = rawTokens[i].toUpperCase(Locale.ROOT);
             }
