@@ -1,122 +1,99 @@
 package src.com.lesson_2_3_4.array;
 
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Locale;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 
 public class TypewriterEffect {
     public static void main(String[] args) {
-        String[] quotes = {
-                "Java - это C++, из которого убрали все пистолеты, ножи и дубинки.\n" +
-                        "- James Gosling",
-
-                "Чтобы написать чистый код, мы сначала пишем грязный код, затем рефакторим его.\n" +
-                        "- Robert Martin",
-
+        String[] texts = {
+                "Java - это C++, из которого убрали все пистолеты, ножи и дубинки.\n- James Gosling",
+                "Чтобы написать чистый код, мы сначала пишем грязный код, затем рефакторим его.\n- Robert " +
+                        "Martin",
                 null,
-
                 ""
         };
-        for (String quote : quotes) {
-            if (quote == null) {
-                System.out.println("Ошибка: цитата равна null");
-                continue;
+
+        System.out.println();
+        for (int i = 0; i < texts.length; i++) {
+            try {
+                String[] raw = splitToRawTokens(texts[i]);
+                String[] cleaned = cleanRawTokens(raw);
+                int[] range = findIndexShortestAndLongestWords(cleaned);
+                toUpperCaseRange(raw, range);
+                printWithEffect(raw, 20);
+            } catch (IllegalArgumentException e) {
+                System.out.println("Пропускаю текст " + i + ": " + e.getMessage());
             }
-            if (quote.isBlank()) {
-                System.out.println("Ошибка: цитата пуста");
-                continue;
-            }
-            String[] tokens = splitRawTokens(quote);
-            int[] range = findIndexShortestAndLongestWords(quote);
-            toUpperCaseRange(tokens, range);
-            printWithEffect(tokens, 100);
         }
     }
 
-    /**
-     * Определяет индексы самого короткого и самого длинного слова в переданной строке.
-     *
-     * <p>
-     * Метод находит слова, удаляя все знаки препинания и деля строку на токены. Возвращает индексы самого
-     * короткого и самого длинного слова, гарантируя, что индекс самого короткого слова всегда будет меньше
-     * или равен индексу самого длинного слова. Если строка пустая или не содержит слов, выбрасывает
-     * исключение IllegalArgumentException.
-     *
-     * @param text строка, в которой необходимо определить индексы самого короткого и самого длинного слова.
-     *             Не может быть null или пустой.
-     *
-     * @return массив из двух целых чисел, индексы самого короткого и самого длинного слова.
-     *
-     * @throws IllegalArgumentException если строка пустая, null или не содержит слов после очистки.
-     */
-    private static int[] findIndexShortestAndLongestWords(String text) {
+    private static String[] splitToRawTokens(String text) {
         if (text == null || text.isBlank()) {
-            throw new IllegalArgumentException("Ошибка: строка не может быть null или пуста");
+            throw new IllegalArgumentException("Ошибка: текст не может быть null или пуст");
         }
-        // Сплитим по пробельным символам
-        String[] tokens = text.split("[ \\t]+");
+        // слово = подряд не-пробельные символы, кроме \n; либо одиночный '\n'
+        Pattern pattern = Pattern.compile("[^ \\t\\n]+|\\n");
+        Matcher matcher = pattern.matcher(text);
 
-        // Находим индексы самого длинного и короткого слова
+        List<String> tokens = new ArrayList<>();
+        while (matcher.find()) {
+            tokens.add(matcher.group());
+        }
+        return tokens.toArray(new String[0]);
+    }
+
+    private static String[] cleanRawTokens(String[] raw) {
+        if (raw == null || raw.length == 0) {
+            throw new IllegalArgumentException("Ошибка: массив не может быть null или пуст");
+        }
+        String[] cleaned = new String[raw.length];
+        for (int i = 0; i < raw.length; i++) {
+            String token = raw[i];
+            if (token == null) {
+                throw new IllegalArgumentException("Ошибка: элемент массива [" + i + "] не может быть null");
+            }
+            cleaned[i] = token.replaceAll("[\\p{P}\\p{S}\\s]+", ""); // слова без пунктуации/пробелов/\n
+        }
+        return cleaned;
+    }
+
+    private static int[] findIndexShortestAndLongestWords(String[] cleaned) {
+        if (cleaned == null || cleaned.length == 0) {
+            throw new IllegalArgumentException("Ошибка: массив не может быть пуст и длина не может быть 0");
+        }
+
         int minLength = Integer.MAX_VALUE;
         int maxLength = Integer.MIN_VALUE;
         int minIndex = -1;
         int maxIndex = -1;
-        for (int i = 0; i < tokens.length; i++) {
-            // Удаляем пунктуацию и символы из токена, чтобы корректно считать длину слова
-            String cleaned = tokens[i].replaceAll("[\\p{P}\\p{S}\\s]+", "");
-            int length = cleaned.length();
-            // Игнорируем пробелы
-            if (length == 0) {
+
+        for (int i = 0; i < cleaned.length; i++) {
+            String word = cleaned[i];
+            if (word.isEmpty()) {
                 continue;
             }
-            if (length < minLength) {
-                minLength = length;
+            int len = word.length();
+            if (len < minLength) {
+                minLength = len;
                 minIndex = i;
             }
-            if (length > maxLength) {
-                maxLength = length;
+            if (len > maxLength) {
+                maxLength = len;
                 maxIndex = i;
             }
         }
-        // Если не найдено ни одного слова, ни один индекс не обновляется
+
         if (minIndex == -1) {
-            throw new IllegalArgumentException("Ошибка: не найдено слов после очистки");
+            throw new IllegalArgumentException("Ошибка: не найдено ни одного слова");
         }
-        // Сортируем индексы по возрастанию
         int start = Math.min(minIndex, maxIndex);
         int end = Math.max(minIndex, maxIndex);
-
         return new int[]{start, end};
     }
 
-    /**
-     * Разделяет строку на массив токенов, используя пробелы как разделитель. Метод сохраняет знаки препинания
-     * в токенах.
-     *
-     * @param text строка, которая будет разбита на токены. Не может быть null или пустой.
-     *
-     * @return массив строк, представляющих токены, разделенные пробелами.
-     *
-     * @throws IllegalArgumentException если строка null или пуста.
-     */
-    private static String[] splitRawTokens(String text) {
-        if (text == null || text.isBlank()) {
-            throw new IllegalArgumentException("Ошибка: строка не может быть null или пуста");
-        }
-        // Возвращаем массив без пробелов, но со знаками препинания
-        return text.split("[ \\t]+");
-    }
-
-    /**
-     * Преобразует значения в массиве строк в верхний регистр в пределах указанного диапазона индексов.
-     *
-     * @param rawTokens массив строк, который необходимо изменить. Не должен быть null.
-     * @param range     массив из двух элементов, определяющий начальный и конечный индекс диапазона. Первое
-     *                  значение - начало диапазона (включительно), второе - конец диапазона (включительно).
-     *                  Должен содержать ровно 2 элемента, где начало диапазона не больше конца.
-     *
-     * @throws IllegalArgumentException если массив строк равен null, если массив диапазона не содержит ровно
-     *                                  двух элементов, если начало или конец диапазона выходит за границы
-     *                                  массива строк, либо если начало диапазона больше его конца.
-     */
     private static void toUpperCaseRange(String[] rawTokens, int[] range) {
         if (rawTokens == null) {
             throw new IllegalArgumentException("Ошибка: массив токенов null");
@@ -131,22 +108,12 @@ public class TypewriterEffect {
             throw new IllegalArgumentException("Ошибка: начало диапазона не может быть больше конца");
         }
         for (int i = range[0]; i <= range[1]; i++) {
-            rawTokens[i] = rawTokens[i].toUpperCase(Locale.ROOT);
+            if (!"\n".equals(rawTokens[i])) {
+                rawTokens[i] = rawTokens[i].toUpperCase(Locale.ROOT);
+            }
         }
     }
 
-    /**
-     * Выводит символы строк из массива с заданной задержкой между символами. После каждой строки добавляется
-     * пробел. Если один из токенов пустой или null, выбрасывается исключение. Если задержка отрицательная,
-     * выбрасывается исключение.
-     *
-     * @param rawTokens массив строк, символы которых нужно вывести. Не может быть null, строки внутри массива
-     *                  не могут быть null или пустыми.
-     * @param delay     задержка в миллисекундах между выводом символов. Не может быть отрицательной.
-     *
-     * @throws IllegalArgumentException если массив равен null, если одна из строк в массиве равна null или
-     *                                  пуста, либо если задержка отрицательна.
-     */
     private static void printWithEffect(String[] rawTokens, int delay) {
         if (rawTokens == null) {
             throw new IllegalArgumentException("Ошибка: массив строк не может быть null");
@@ -155,12 +122,21 @@ public class TypewriterEffect {
             throw new IllegalArgumentException("Ошибка: задержка не может быть меньше 0");
         }
         for (int i = 0; i < rawTokens.length; i++) {
-            if (rawTokens[i] == null || rawTokens[i].isBlank()) {
+            String word = rawTokens[i];
+            if (word == null) {
+                throw new IllegalArgumentException("Ошибка: токен [" + i + "] не может быть null");
+            }
+            if (word.isBlank() && !"\n".equals(word)) {
                 throw new IllegalArgumentException("Ошибка: токен [" + i + "] не может быть пустым");
             }
         }
-        for (int i = 0; i < rawTokens.length; i++) {
-            for (char c : rawTokens[i].toCharArray()) {
+
+        for (String token : rawTokens) {
+            if ("\n".equals(token)) {
+                System.out.println();
+                continue;
+            }
+            for (char c : token.toCharArray()) {
                 try {
                     System.out.print(c);
                     Thread.sleep(delay);
@@ -172,6 +148,6 @@ public class TypewriterEffect {
             }
             System.out.print(" ");
         }
-        System.out.printf("%n");
+        System.out.println();
     }
 }
