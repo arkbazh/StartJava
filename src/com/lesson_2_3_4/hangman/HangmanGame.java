@@ -5,8 +5,6 @@ import java.util.Scanner;
 import java.util.concurrent.ThreadLocalRandom;
 import java.util.regex.Pattern;
 
-import static java.lang.System.in;
-
 class HangmanGame {
     private static final String[] GALLOWS = {
             "_______",
@@ -19,7 +17,7 @@ class HangmanGame {
     private static final int LIVES = GALLOWS.length;
     private static final Pattern CYRILLIC_PATTERN = Pattern.compile("[а-яёА-ЯЁ]");
 
-    private final Scanner scanner = new Scanner(in);
+    private final Scanner scanner = new Scanner(System.in);
     private char[] mask;
     private int mistakes;
     private String secretWord;
@@ -43,7 +41,6 @@ class HangmanGame {
             }
             printResult();
         } while (askReplay());
-
     }
 
     private void resetStatsForNewRound() {
