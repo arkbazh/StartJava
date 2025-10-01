@@ -1,5 +1,6 @@
 package src.com.lesson_2_3_4.hangman;
 
+import java.util.Arrays;
 import java.util.Locale;
 import java.util.Scanner;
 import java.util.concurrent.ThreadLocalRandom;
@@ -12,146 +13,103 @@ class HangmanGame {
             "|     @",
             "|    /|\\",
             "|    / \\",
-            "| GAME OVER!"};
-    private static final String[] DICTIONARY = {"чай", "англия", "агент", "работа", "игра"};
-    private static final int LIVES = GALLOWS.length;
-    private static final Pattern CYRILLIC_PATTERN = Pattern.compile("[а-яёА-ЯЁ]");
+            "| GAME OVER!"
+    };
 
-    private final Scanner scanner = new Scanner(System.in);
+    private static final String[] DICTIONARY = {"чай", "англия", "агент", "работа", "игра"};
+    private static final int ATTEMPTS = GALLOWS.length;
+    private static final Pattern CYRILLIC_PATTERN = Pattern.compile("^[а-яёА-ЯЁ]$");
+
+    private final Scanner scanner;
+    private final StringBuilder usedLetters = new StringBuilder();
+    private final StringBuilder wrongLetters = new StringBuilder();
     private char[] mask;
     private int mistakes;
     private String secretWord;
-    private String usedLetters;
-    private String wrongLetters;
 
-    void play() {
-        do {
-            System.out.println("Игра начинается.");
-            resetStatsForNewRound();
-            while (!isWin() && !isLose()) {
-                char guess = readUsersGuess();
-                addUsedLetters(guess);
-                boolean hit = revealLetterInMask(guess);
-                if (hit) {
-                    onHit();
-                } else {
-                    onMiss(guess);
-                }
-                printGameState();
-            }
-            printResult();
-        } while (askReplay());
+    HangmanGame(Scanner scanner) {
+        this.scanner = scanner;
+        this.secretWord = "";
+        this.mask = new char[0];
     }
 
-    private void resetStatsForNewRound() {
-        secretWord = DICTIONARY[ThreadLocalRandom.current().nextInt(0, DICTIONARY.length)];
+    void resetStatsForNewRound() {
+        secretWord = DICTIONARY[ThreadLocalRandom.current().nextInt(DICTIONARY.length)];
         mask = "*".repeat(secretWord.length()).toCharArray();
         mistakes = 0;
-        usedLetters = "";
-        wrongLetters = "";
+        usedLetters.setLength(0);
+        wrongLetters.setLength(0);
     }
 
-    private char readUsersGuess() {
-        String s;
-        do {
+    char inputLetter() {
+        while (true) {
             System.out.print("Введите букву: ");
-            s = scanner.nextLine().trim().toLowerCase(Locale.ROOT);
-            if (s.isEmpty()) {
-                System.out.println("Ввод не может быть пустым");
+            String input = scanner.nextLine().trim().toLowerCase(Locale.ROOT);
+
+            if (!CYRILLIC_PATTERN.matcher(input).matches()) {
+                System.out.println("Нужно ввести ровно одну букву кириллицы.");
                 continue;
             }
-            if (usedLetters.contains(s)) {
-                System.out.println("Буква уже была использована.");
+
+            if (usedLetters.indexOf(input) >= 0) {
+                System.out.println("Буква уже была.");
                 continue;
             }
-            if (!CYRILLIC_PATTERN.matcher(s).matches()) {
-                System.out.println("Должна быть одна буква кириллицы");
-                continue;
-            }
-            break;
-        } while (true);
-        return s.charAt(0);
+
+            return input.charAt(0);
+        }
     }
 
-    private void addUsedLetters(char guess) {
-        usedLetters += guess;
+    void addUsedLetter(char guess) {
+        usedLetters.append(guess);
     }
 
-    private boolean revealLetterInMask(char guess) {
-        boolean hit = false;
+    boolean revealLetterInMask(char guess) {
         for (int i = 0; i < secretWord.length(); i++) {
             if (secretWord.charAt(i) == guess) {
                 mask[i] = Character.toUpperCase(guess);
-                hit = true;
+                return true;
             }
         }
-        return hit;
+        return false;
     }
 
-    private void onHit() {
+    void onHit() {
         if (mistakes > 0) {
             mistakes--;
         }
     }
 
-    private void onMiss(char guess) {
-        if (wrongLetters.indexOf(guess) < 0) {
-            wrongLetters += guess;
+    void onMiss(char guess) {
+        if (wrongLetters.indexOf(String.valueOf(guess)) < 0) {
+            wrongLetters.append(guess);
         }
         mistakes++;
     }
 
-    private void printGameState() {
+    void printState() {
         for (int i = 0; i < Math.min(mistakes, GALLOWS.length); i++) {
             System.out.println(GALLOWS[i]);
         }
-
         System.out.println(new String(mask));
-
         System.out.println("Неверные буквы: " + wrongLetters);
-
-        int livesLeft = Math.max(0, LIVES - mistakes);
-        System.out.println("Осталось попыток: " + livesLeft + ". Всего попыток: " + LIVES + ".");
+        int livesLeft = Math.max(0, ATTEMPTS - mistakes);
+        System.out.println("Осталось попыток: " + livesLeft + " из " + ATTEMPTS + ".");
     }
 
-    private boolean isWin() {
-        for (char c : mask) {
-            if (c == '*') {
-                return false;
-            }
-        }
-        return true;
+    boolean isWin() {
+        return Arrays.toString(mask).equalsIgnoreCase(secretWord);
     }
 
-    private boolean isLose() {
-        if (mistakes >= LIVES) {
-            return true;
-        }
-        return false;
+    boolean isLose() {
+        return mistakes >= ATTEMPTS;
     }
 
-    private void printResult() {
+    void printResult() {
         if (isWin()) {
             System.out.println("Победа! Слово: " + secretWord);
-        }
-        if (isLose()) {
+        } else if (isLose()) {
             System.out.println("Проигрыш. Слово: " + secretWord);
-        }
-    }
-
-    private boolean askReplay() {
-        String answer;
-        while (true) {
-            System.out.println("Играть заново? введите: yes/no");
-            answer = scanner.nextLine().trim();
-
-            if (answer.equalsIgnoreCase("yes")) {
-                return true;
-            } else if (answer.equalsIgnoreCase("no")) {
-                return false;
-            } else {
-                System.out.println("Некорректный ввод. Введите только yes или no.");
-            }
         }
     }
 }
