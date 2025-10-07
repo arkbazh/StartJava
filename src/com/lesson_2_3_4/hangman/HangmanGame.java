@@ -7,74 +7,51 @@ import java.util.regex.Pattern;
 
 public class HangmanGame {
     private static final String[] GALLOWS = {
-            "_______",
-            "|     |",
-            "|     @",
-            "|    /|\\",
-            "|    / \\",
-            "| GAME OVER!"
+            "_______", "|     |", "|     @", "|    /|\\", "|    / \\", "| GAME OVER!"
     };
-
     private static final String[] DICTIONARY = {"чай", "англия", "агент", "работа", "игра"};
     private static final int ATTEMPTS = GALLOWS.length;
     private static final Pattern CYRILLIC_PATTERN = Pattern.compile("^[а-яёА-ЯЁ]$");
 
-    private final StringBuilder usedLetters;
-    private final StringBuilder wrongLetters;
+    private final StringBuilder usedLetters = new StringBuilder();
+    private final StringBuilder wrongLetters = new StringBuilder();
     private String secretWord;
     private char[] mask;
     private int mistakes;
 
-    HangmanGame() {
-        this.usedLetters = new StringBuilder();
-        this.wrongLetters = new StringBuilder();
-        this.secretWord = "";
-        this.mask = new char[0];
+    public HangmanGame() {
+        this.secretWord = DICTIONARY[ThreadLocalRandom.current().nextInt(DICTIONARY.length)];
+        this.mask = "*".repeat(secretWord.length()).toCharArray();
+        this.mistakes = 0;
     }
 
-    public void play() {
-        try (Scanner scanner = new Scanner(System.in)) {
-            do {
-                resetStatsForNewRound();
-                while (!isWin() && !isLose()) {
-                    printState();
-                    char letter = inputLetter(scanner);
-                    addUsedLetter(letter);
-                    if (revealLetterInMask(letter)) {
-                        onHit();
-                    } else {
-                        onMiss(letter);
-                    }
-                }
-                printState();
-                printResult();
-            } while (playAgain(scanner));
+    public void playOnce(Scanner scanner) {
+        while (!isWin() && !isLose()) {
+            printState();
+            char letter = inputLetter(scanner);
+            addUsedLetter(letter);
+            if (revealLetterInMask(letter)) {
+                onHit();
+            } else {
+                onMiss(letter);
+            }
         }
-    }
-
-    private void resetStatsForNewRound() {
-        secretWord = DICTIONARY[ThreadLocalRandom.current().nextInt(DICTIONARY.length)];
-        mask = "*".repeat(secretWord.length()).toCharArray();
-        mistakes = 0;
-        usedLetters.setLength(0);
-        wrongLetters.setLength(0);
+        printState();
+        printResult();
     }
 
     private char inputLetter(Scanner scanner) {
         while (true) {
             System.out.print("Введите букву: ");
             String input = scanner.nextLine().trim().toLowerCase(Locale.ROOT);
-
             if (!CYRILLIC_PATTERN.matcher(input).matches()) {
                 System.out.println("Нужно ввести ровно одну букву кириллицы.");
                 continue;
             }
-
             if (usedLetters.indexOf(input) >= 0) {
                 System.out.println("Буква уже была.");
                 continue;
             }
-
             return input.charAt(0);
         }
     }
@@ -108,9 +85,8 @@ public class HangmanGame {
     }
 
     private void printState() {
-        for (int i = 0; i < Math.min(mistakes, GALLOWS.length); i++) {
+        for (int i = 0; i < Math.min(mistakes, GALLOWS.length); i++)
             System.out.println(GALLOWS[i]);
-        }
         System.out.println(new String(mask));
         System.out.println("Неверные буквы: " + wrongLetters);
         int livesLeft = Math.max(0, ATTEMPTS - mistakes);
@@ -128,18 +104,8 @@ public class HangmanGame {
     private void printResult() {
         if (isWin()) {
             System.out.println("Победа! Слово: " + secretWord);
-        } else if (isLose()) {
+        } else {
             System.out.println("Проигрыш. Слово: " + secretWord);
         }
-    }
-
-    private boolean playAgain(Scanner scanner) {
-        String answer;
-        do {
-            System.out.print("Играем заново? Введите yes/no ");
-            answer = scanner.nextLine().trim().toLowerCase();
-        }
-        while (!answer.equalsIgnoreCase("yes") && !answer.equalsIgnoreCase("no"));
-        return answer.equalsIgnoreCase("yes");
     }
 }

@@ -1,5 +1,5 @@
-//package src.com.lesson_2_3_4.calculator;
-//
+package src.com.lesson_2_3_4.calculator;
+
 //import java.util.Scanner;
 //
 //public class CalculatorMain {
