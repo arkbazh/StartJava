@@ -1,12 +1,13 @@
 package src.com.lesson_2_3_4.hangman;
 
+import java.util.Locale;
 import java.util.Scanner;
 
 public class HangmanGameMain {
     public static void main(String[] args) {
         try (Scanner scanner = new Scanner(System.in)) {
             do {
-                new HangmanGame().playOnce(scanner);
+                new HangmanGame().play(scanner);
             } while (askReplay(scanner));
         }
     }
@@ -15,8 +16,8 @@ public class HangmanGameMain {
         String answer;
         do {
             System.out.print("Играем заново? Введите yes/no: ");
-            answer = scanner.nextLine().trim();
-        } while (!answer.equalsIgnoreCase("yes") && !answer.equalsIgnoreCase("no"));
-        return answer.equalsIgnoreCase("yes");
+            answer = scanner.nextLine().trim().toLowerCase(Locale.ROOT);
+        } while (!answer.equals("yes") && !answer.equals("no"));
+        return answer.equals("yes");
     }
 }

@@ -5,29 +5,35 @@ import java.util.Scanner;
 import java.util.concurrent.ThreadLocalRandom;
 import java.util.regex.Pattern;
 
-public class HangmanGame {
+class HangmanGame {
     private static final String[] GALLOWS = {
-            "_______", "|     |", "|     @", "|    /|\\", "|    / \\", "| GAME OVER!"
+            "_______",
+            "|     |",
+            "|     @",
+            "|    /|\\",
+            "|    / \\",
+            "| GAME OVER!"
     };
     private static final String[] DICTIONARY = {"чай", "англия", "агент", "работа", "игра"};
     private static final int ATTEMPTS = GALLOWS.length;
     private static final Pattern CYRILLIC_PATTERN = Pattern.compile("^[а-яёА-ЯЁ]$");
 
-    private final StringBuilder usedLetters = new StringBuilder();
-    private final StringBuilder wrongLetters = new StringBuilder();
+    private final StringBuilder usedLetters;
+    private final StringBuilder wrongLetters;
     private String secretWord;
     private char[] mask;
     private int mistakes;
 
-    public HangmanGame() {
+    HangmanGame() {
+        this.usedLetters = new StringBuilder();
+        this.wrongLetters = new StringBuilder();
         this.secretWord = DICTIONARY[ThreadLocalRandom.current().nextInt(DICTIONARY.length)];
         this.mask = "*".repeat(secretWord.length()).toCharArray();
         this.mistakes = 0;
     }
 
-    public void playOnce(Scanner scanner) {
+    void play(Scanner scanner) {
         while (!isWin() && !isLose()) {
-            printState();
             char letter = inputLetter(scanner);
             addUsedLetter(letter);
             if (revealLetterInMask(letter)) {
@@ -37,7 +43,7 @@ public class HangmanGame {
             }
         }
         printState();
-        printResult();
+        printFinalMessage();
     }
 
     private char inputLetter(Scanner scanner) {
@@ -85,11 +91,12 @@ public class HangmanGame {
     }
 
     private void printState() {
-        for (int i = 0; i < Math.min(mistakes, GALLOWS.length); i++)
+        int miss = Math.min(wrongLetters.length(), GALLOWS.length);
+        for (int i = 0; i < miss; i++)
             System.out.println(GALLOWS[i]);
         System.out.println(new String(mask));
         System.out.println("Неверные буквы: " + wrongLetters);
-        int livesLeft = Math.max(0, ATTEMPTS - mistakes);
+        int livesLeft = Math.max(0, ATTEMPTS - miss);
         System.out.println("Осталось попыток: " + livesLeft + " из " + ATTEMPTS + ".");
     }
 
@@ -101,7 +108,7 @@ public class HangmanGame {
         return mistakes >= ATTEMPTS;
     }
 
-    private void printResult() {
+    private void printFinalMessage() {
         if (isWin()) {
             System.out.println("Победа! Слово: " + secretWord);
         } else {
