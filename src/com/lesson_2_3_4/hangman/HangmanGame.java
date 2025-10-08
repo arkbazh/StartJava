@@ -34,6 +34,7 @@ class HangmanGame {
 
     void play(Scanner scanner) {
         while (!isWin() && !isLose()) {
+            printState();
             char letter = inputLetter(scanner);
             addUsedLetter(letter);
             if (revealLetterInMask(letter)) {
