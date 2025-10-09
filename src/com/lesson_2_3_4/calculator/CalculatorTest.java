@@ -17,15 +17,15 @@ public class CalculatorTest {
     private static double calc(String[] exp) {
         int a = Integer.parseInt(exp[0]);
         int b = Integer.parseInt(exp[2]);
-        String op = exp[1];
-        return switch (op) {
+        String operator = exp[1];
+        return switch (operator) {
             case "+" -> a + b;
             case "-" -> a - b;
             case "*" -> a * b;
             case "/" -> (double) a / b;
             case "%" -> Math.floorMod(a, b);
             case "^" -> Math.pow(a, b);
-            default -> throw new IllegalStateException("Неизвестный оператор: " + op);
+            default -> throw new IllegalStateException("Неизвестный оператор: " + operator);
         };
     }
 }
