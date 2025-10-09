@@ -6,18 +6,13 @@ import java.util.Scanner;
 public class HangmanGameMain {
     public static void main(String[] args) {
         try (Scanner scanner = new Scanner(System.in)) {
+            boolean playNextRound;
             do {
                 new HangmanGame().play(scanner);
-            } while (askReplay(scanner));
+                System.out.println("Играть заново? Введите только yes/no");
+                String answer = scanner.nextLine().trim().toLowerCase(Locale.ROOT);
+                playNextRound = "yes".equals(answer);
+            } while (playNextRound);
         }
-    }
-
-    private static boolean askReplay(Scanner scanner) {
-        String answer;
-        do {
-            System.out.print("Играем заново? Введите yes/no: ");
-            answer = scanner.nextLine().trim().toLowerCase(Locale.ROOT);
-        } while (!answer.equals("yes") && !answer.equals("no"));
-        return answer.equals("yes");
     }
 }
