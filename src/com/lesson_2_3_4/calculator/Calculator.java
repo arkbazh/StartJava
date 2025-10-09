@@ -4,7 +4,7 @@ import java.util.Scanner;
 
 class Calculator {
 
-    public String[] splitInput() {
+    String[] splitInput() {
         String[] arguments;
         try (Scanner scanner = new Scanner(System.in)) {
             System.out.println("Введите выражение из трех аргументов, например, 2 ^ 10: ");
@@ -20,7 +20,7 @@ class Calculator {
         return arguments;
     }
 
-    public void validateInput(String[] arg) {
+    boolean validateInput(String[] arg) {
         if (arg == null || arg.length != 3) {
             throw new IllegalArgumentException("Ожидаю формат: <число> <оператор> <число>, например: 2 * 8");
         }
@@ -46,6 +46,6 @@ class Calculator {
                 throw new IllegalArgumentException("Показатель степени должен быть от 0 до 10");
             }
         }
+        return true;
     }
-
 }

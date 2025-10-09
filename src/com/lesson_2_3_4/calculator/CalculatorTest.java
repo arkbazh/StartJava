@@ -4,17 +4,23 @@ import java.util.Locale;
 
 public class CalculatorTest {
     public static void main(String[] args) {
-        Calculator test = new Calculator();
-        String[] expression = test.splitInput();
-        test.validateInput(expression);
-        double result = calc(expression);
-        System.out.printf("Результат вычисления: %s%n",
-                String.format(Locale.ROOT, "%.3f", result)
-                        .replaceAll("\\.?0+$", ""));
-
+        Calculator calculator = new Calculator();
+        String[] expression = calculator.splitInput();
+        double result = Double.NaN;
+        try {
+            calculator.validateInput(expression);
+            result = calculate(expression);
+        } catch (IllegalArgumentException e) {
+            System.out.println("Ошибка: " + e.getMessage());
+        }
+        if (!Double.isNaN(result)) {
+            System.out.printf("Результат вычисления: %s%n",
+                    String.format(Locale.ROOT, "%.3f", result)
+                            .replaceAll("\\.?0+$", ""));
+        }
     }
 
-    private static double calc(String[] exp) {
+    private static double calculate(String[] exp) {
         int a = Integer.parseInt(exp[0]);
         int b = Integer.parseInt(exp[2]);
         String operator = exp[1];
