@@ -1,29 +1,39 @@
 package src.com.lesson_2_3_4.calculator;
 
-public class Calculator {
-    public double calculate(int firstNum, char operator, int secondNum) {
-        switch (operator) {
-            case '+':
-                return firstNum + secondNum;
-            case '-':
-                return firstNum - secondNum;
-            case '*':
-                return firstNum * secondNum;
-            case '/':
-                if (secondNum == 0) {
-                    throw new ArithmeticException("Ошибка: деление на ноль запрещено");
-                }
-                return firstNum / secondNum;
-            case '%':
-                if (secondNum == 0) {
-                    throw new ArithmeticException("Ошибка: деление на ноль запрещено");
-                }
-                return firstNum % secondNum;
-            case '^':
-                return Math.pow(firstNum, secondNum);
+import java.util.Scanner;
 
-            default:
-                throw new IllegalArgumentException("Оператор " + operator + " не поддерживается");
+class Calculator {
+
+    public String[] getExpression() {
+        String[] exp;
+        try (Scanner scanner = new Scanner(System.in)) {
+            System.out.println("Введите выражение из трех аргументов, например, 2 ^ 10: ");
+            String str = scanner.nextLine().trim();
+            if (str.isBlank()) {
+                System.out.println("Выражение не может быть пустым");
+            }
+            exp = str.trim()
+                    .replaceAll(",", ".")
+                    .replaceAll("\\s+", " ")
+                    .split(" ");
+            if (exp.length != 3) {
+                System.out.println("Error");
+            }
+            if (!exp[0].matches("^\\d+$")) {
+                System.out.println("Error");
+            }
+            if (!exp[2].matches("^\\d+$")) {
+                System.out.println("Error");
+            }
+            if (!exp[1].matches("[+\\-*/%^]")) {
+                System.out.println("Error");
+            }
+            //  если оператор / или % правый операнд не равен 0
+            if (exp[1].matches("[/%]") && exp[2].matches("0")) {
+                System.out.println("Error");
+            }
         }
+        return exp;
     }
+
 }
