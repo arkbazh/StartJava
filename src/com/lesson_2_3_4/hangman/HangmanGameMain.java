@@ -11,7 +11,7 @@ public class HangmanGameMain {
                 new HangmanGame().play(scanner);
                 System.out.println("Играть заново? Введите только yes/no");
                 String answer = scanner.nextLine().trim().toLowerCase(Locale.ROOT);
-                playNextRound = "yes".equals(answer);
+                playNextRound = answer.equals("yes");
             } while (playNextRound);
         }
     }
