@@ -20,7 +20,7 @@ class Calculator {
         return arguments;
     }
 
-    boolean validateInput(String[] arg) {
+    void validateInput(String[] arg) {
         if (arg == null || arg.length != 3) {
             throw new IllegalArgumentException("Ожидаю формат: <число> <оператор> <число>, например: 2 * 8");
         }
@@ -46,6 +46,20 @@ class Calculator {
                 throw new IllegalArgumentException("Показатель степени должен быть от 0 до 10");
             }
         }
-        return true;
+    }
+
+    double calculate(String[] exp) {
+        int a = Integer.parseInt(exp[0]);
+        int b = Integer.parseInt(exp[2]);
+        String operator = exp[1];
+        return switch (operator) {
+            case "+" -> a + b;
+            case "-" -> a - b;
+            case "*" -> a * b;
+            case "/" -> (double) a / b;
+            case "%" -> Math.floorMod(a, b);
+            case "^" -> Math.pow(a, b);
+            default -> throw new IllegalStateException("Неизвестный оператор: " + operator);
+        };
     }
 }

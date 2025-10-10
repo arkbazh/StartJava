@@ -9,7 +9,7 @@ public class CalculatorTest {
         double result = Double.NaN;
         try {
             calculator.validateInput(expression);
-            result = calculate(expression);
+            result = calculator.calculate(expression);
         } catch (IllegalArgumentException e) {
             System.out.println("Ошибка: " + e.getMessage());
         }
@@ -18,20 +18,5 @@ public class CalculatorTest {
                     String.format(Locale.ROOT, "%.3f", result)
                             .replaceAll("\\.?0+$", ""));
         }
-    }
-
-    private static double calculate(String[] exp) {
-        int a = Integer.parseInt(exp[0]);
-        int b = Integer.parseInt(exp[2]);
-        String operator = exp[1];
-        return switch (operator) {
-            case "+" -> a + b;
-            case "-" -> a - b;
-            case "*" -> a * b;
-            case "/" -> (double) a / b;
-            case "%" -> Math.floorMod(a, b);
-            case "^" -> Math.pow(a, b);
-            default -> throw new IllegalStateException("Неизвестный оператор: " + operator);
-        };
     }
 }
