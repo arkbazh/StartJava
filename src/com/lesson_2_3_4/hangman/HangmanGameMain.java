@@ -6,24 +6,22 @@ import java.util.Scanner;
 public class HangmanGameMain {
     public static void main(String[] args) {
         try (Scanner scanner = new Scanner(System.in)) {
-            boolean awaitAnswer = false;
-            while (true) {
-                if (!awaitAnswer) {
-                    new HangmanGame().play(scanner);
-                    awaitAnswer = true;
-                    continue;
-                }
+            System.out.print("Играть? Введите yes/no: ");
+            String answer = scanner.nextLine().trim().toLowerCase(Locale.ROOT);
 
-                System.out.println("Играть заново? Введите только yes/no");
-                String answer = scanner.nextLine().trim().toLowerCase(Locale.ROOT);
-                if (answer.equals("yes")) {
-                    awaitAnswer = false;
+            while (true) {
+                if ("yes".equals(answer)) {
+                    new HangmanGame().play(scanner);
+                    System.out.print("Играть? Введите yes/no: ");
+                    answer = scanner.nextLine().trim().toLowerCase(Locale.ROOT);
                     continue;
                 }
-                if (answer.equals("no")) {
+                if ("no".equals(answer)) {
                     break;
                 }
-                System.out.println("Введите только yes / no");
+                System.out.println("Введите только yes/no");
+                System.out.print("Играть? Введите yes/no: ");
+                answer = scanner.nextLine().trim().toLowerCase(Locale.ROOT);
             }
         }
     }
